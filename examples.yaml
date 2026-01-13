@@ -1,0 +1,14 @@
+version: 1
+
+examples:
+  - path: chainlink_examples/ccip_example
+    type: solidity
+    description: "Chainlink CCIP example (Foundry): messaging + token transfers between Sepolia and Jovay Testnet."
+    test:
+      solidity:
+        foundry:
+          fmt: true
+          build: true
+          test:
+            offline: true
+

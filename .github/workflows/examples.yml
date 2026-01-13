@@ -1,0 +1,51 @@
+name: examples
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - "feat/**"
+
+jobs:
+  examples:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.matrix.outputs.matrix) }}
+    needs: [matrix]
+
+    steps:
+      - name: Checkout (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        if: ${{ matrix.type == 'solidity' }}
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+
+      - name: Run example checks
+        env:
+          EXAMPLE_PATH: ${{ matrix.path }}
+          EXAMPLE_TYPE: ${{ matrix.type }}
+          FOUNDRY_TEST_OFFLINE: ${{ matrix.foundry_offline }}
+        run: |
+          bash ci/run_example.sh
+
+  matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.gen.outputs.matrix }}
+    steps:
+      - name: Checkout (no submodules needed to read registry)
+        uses: actions/checkout@v4
+
+      - name: Generate matrix from examples.yaml
+        id: gen
+        run: |
+          matrix="$(python3 ci/list_examples.py --format gha-matrix)"
+          echo "matrix=${matrix}" >> "$GITHUB_OUTPUT"
+

@@ -1,0 +1,9 @@
+[submodule "chainlink_examples/ccip_example/lib/forge-std"]
+	path = chainlink_examples/ccip_example/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std.git
+[submodule "chainlink_examples/ccip_example/lib/openzeppelin-contracts"]
+	path = chainlink_examples/ccip_example/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts.git
+[submodule "chainlink_examples/ccip_example/lib/ccip"]
+	path = chainlink_examples/ccip_example/lib/ccip
+	url = https://github.com/smartcontractkit/chainlink-ccip.git
