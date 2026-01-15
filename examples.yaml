@@ -12,3 +12,62 @@ examples:
           test:
             offline: true
 
+  - path: foundry_examples/token_example
+    type: solidity
+    description: "ERC-20 token example (Foundry): create and deploy your first token on Jovay."
+    test:
+      solidity:
+        foundry:
+          fmt: true
+          build: true
+          test:
+            offline: true
+
+  - path: foundry_examples/nft_example
+    type: solidity
+    description: "ERC-721 NFT example (Foundry): create and deploy your first NFT on Jovay."
+    test:
+      solidity:
+        foundry:
+          fmt: true
+          build: true
+          test:
+            offline: true
+
+  - path: foundry_examples/staking_example
+    type: solidity
+    description: "Staking contract example (Foundry): build and deploy a simple staking contract on Jovay."
+    test:
+      solidity:
+        foundry:
+          fmt: true
+          build: true
+          test:
+            offline: true
+
+  - path: hardhat_examples/token_example
+    type: solidity
+    description: "ERC-20 token example (Hardhat): create and deploy your first token on Jovay."
+    test:
+      solidity:
+        hardhat:
+          compile: true
+          test: true
+
+  - path: hardhat_examples/nft_example
+    type: solidity
+    description: "ERC-721 NFT example (Hardhat): create and deploy your first NFT on Jovay."
+    test:
+      solidity:
+        hardhat:
+          compile: true
+          test: true
+
+  - path: hardhat_examples/staking_example
+    type: solidity
+    description: "Staking contract example (Hardhat): build and deploy a simple staking contract on Jovay."
+    test:
+      solidity:
+        hardhat:
+          compile: true
+          test: true

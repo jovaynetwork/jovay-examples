@@ -1,0 +1,26 @@
+{
+  "name": "nft-example-hardhat",
+  "version": "1.0.0",
+  "description": "ERC-721 NFT example using Hardhat on Jovay Network",
+  "main": "index.js",
+  "scripts": {
+    "test": "hardhat test",
+    "compile": "hardhat compile"
+  },
+  "keywords": [
+    "hardhat",
+    "jovay",
+    "erc721",
+    "nft"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "^2.19.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.0",
+    "dotenv": "^16.3.1"
+  }
+}

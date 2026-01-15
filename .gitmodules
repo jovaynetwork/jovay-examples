@@ -7,3 +7,21 @@
 [submodule "chainlink_examples/ccip_example/lib/ccip"]
 	path = chainlink_examples/ccip_example/lib/ccip
 	url = https://github.com/smartcontractkit/chainlink-ccip.git
+[submodule "foundry_examples/token_example/lib/forge-std"]
+	path = foundry_examples/token_example/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std.git
+[submodule "foundry_examples/token_example/lib/openzeppelin-contracts"]
+	path = foundry_examples/token_example/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts.git
+[submodule "foundry_examples/nft_example/lib/forge-std"]
+	path = foundry_examples/nft_example/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std.git
+[submodule "foundry_examples/nft_example/lib/openzeppelin-contracts"]
+	path = foundry_examples/nft_example/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts.git
+[submodule "foundry_examples/staking_example/lib/forge-std"]
+	path = foundry_examples/staking_example/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std.git
+[submodule "foundry_examples/staking_example/lib/openzeppelin-contracts"]
+	path = foundry_examples/staking_example/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts.git
