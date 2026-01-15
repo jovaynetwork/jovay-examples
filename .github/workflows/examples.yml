@@ -10,42 +10,34 @@ on:
 jobs:
   examples:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJSON(needs.matrix.outputs.matrix) }}
-    needs: [matrix]
-
     steps:
       - name: Checkout (with submodules)
         uses: actions/checkout@v4
         with:
           submodules: recursive
 
+      - name: Get all example paths
+        id: examples
+        run: |
+          examples_info="$(python3 ci/list_examples.py --format paths)"
+          paths=$(echo "${examples_info}" | python3 -c "import sys, json; d=json.load(sys.stdin); print(d['paths'])")
+          type=$(echo "${examples_info}" | python3 -c "import sys, json; d=json.load(sys.stdin); print(d['type'])")
+          foundry_offline=$(echo "${examples_info}" | python3 -c "import sys, json; d=json.load(sys.stdin); print(str(d['foundry_offline']).lower())")
+          echo "paths=${paths}" >> "$GITHUB_OUTPUT"
+          echo "type=${type}" >> "$GITHUB_OUTPUT"
+          echo "foundry_offline=${foundry_offline}" >> "$GITHUB_OUTPUT"
+
       - name: Install Foundry
-        if: ${{ matrix.type == 'solidity' }}
+        if: ${{ steps.examples.outputs.type == 'solidity' }}
         uses: foundry-rs/foundry-toolchain@v1
         with:
           version: stable
 
       - name: Run example checks
         env:
-          EXAMPLE_PATH: ${{ matrix.path }}
-          EXAMPLE_TYPE: ${{ matrix.type }}
-          FOUNDRY_TEST_OFFLINE: ${{ matrix.foundry_offline }}
+          EXAMPLE_PATHS: ${{ steps.examples.outputs.paths }}
+          EXAMPLE_TYPE: ${{ steps.examples.outputs.type }}
+          FOUNDRY_TEST_OFFLINE: ${{ steps.examples.outputs.foundry_offline }}
         run: |
           bash ci/run_example.sh
-
-  matrix:
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.gen.outputs.matrix }}
-    steps:
-      - name: Checkout (no submodules needed to read registry)
-        uses: actions/checkout@v4
-
-      - name: Generate matrix from examples.yaml
-        id: gen
-        run: |
-          matrix="$(python3 ci/list_examples.py --format gha-matrix)"
-          echo "matrix=${matrix}" >> "$GITHUB_OUTPUT"
 

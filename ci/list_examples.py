@@ -152,7 +152,7 @@ def main() -> int:
     ap.add_argument(
         "--format",
         default="json",
-        choices=["json", "gha-matrix"],
+        choices=["json", "gha-matrix", "gha-matrix-grouped", "paths"],
         help="Output format",
     )
     args = ap.parse_args()
@@ -178,6 +178,69 @@ def main() -> int:
             matrix["include"].append(entry)
 
         sys.stdout.write(json.dumps(matrix))
+        sys.stdout.write("\n")
+        return 0
+
+    if args.format == "gha-matrix-grouped":
+        # Group examples by their top-level directory (e.g., foundry_examples, hardhat_examples)
+        groups: Dict[str, List[Dict[str, Any]]] = {}
+        for ex in examples:
+            # Extract top-level directory from path (e.g., "foundry_examples/token_example" -> "foundry_examples")
+            top_dir = ex["path"].split("/")[0]
+            if top_dir not in groups:
+                groups[top_dir] = []
+            groups[top_dir].append(ex)
+
+        # Build matrix with one entry per group
+        matrix = {"include": []}
+        for group_name, group_examples in sorted(groups.items()):
+            # Collect paths and types for this group
+            paths = [ex["path"] for ex in group_examples]
+            # All examples in a group should have the same type, but we'll use the first one
+            # and verify they're all the same
+            types = {ex["type"] for ex in group_examples}
+            if len(types) > 1:
+                raise ValueError(
+                    f"Group {group_name} has mixed types: {types}. "
+                    "All examples in a group must have the same type."
+                )
+            example_type = group_examples[0]["type"]
+
+            # For foundry examples, check if any requires offline mode
+            foundry_offline = any(ex["foundry"]["offline"] for ex in group_examples if example_type == "solidity")
+
+            entry = {
+                "group": group_name,
+                "paths": " ".join(paths),  # Space-separated list of paths
+                "type": example_type,
+                "foundry_offline": foundry_offline,
+            }
+            matrix["include"].append(entry)
+
+        sys.stdout.write(json.dumps(matrix))
+        sys.stdout.write("\n")
+        return 0
+
+    if args.format == "paths":
+        # Output all paths as space-separated string, plus type and foundry_offline info
+        all_paths = [ex["path"] for ex in examples]
+        # Check types - all should be the same, but we'll use the first one
+        types = {ex["type"] for ex in examples}
+        if len(types) > 1:
+            raise ValueError(
+                f"Mixed types found: {types}. "
+                "All examples must have the same type to run in a single job."
+            )
+        example_type = examples[0]["type"]
+        # For foundry examples, check if any requires offline mode
+        foundry_offline = any(ex["foundry"]["offline"] for ex in examples if example_type == "solidity")
+
+        result = {
+            "paths": " ".join(all_paths),
+            "type": example_type,
+            "foundry_offline": foundry_offline,
+        }
+        sys.stdout.write(json.dumps(result))
         sys.stdout.write("\n")
         return 0
 
