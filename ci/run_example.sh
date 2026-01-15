@@ -24,7 +24,12 @@ echo
 
 case "${EXAMPLE_TYPE}" in
   solidity)
-    exec bash "${ROOT_DIR}/ci/solidity_foundry.sh" "${ABS_PATH}"
+    # Check if this is a Hardhat or Foundry example
+    if [[ -f "${ABS_PATH}/hardhat.config.js" ]] || [[ -f "${ABS_PATH}/package.json" ]]; then
+      exec bash "${ROOT_DIR}/ci/solidity_hardhat.sh" "${ABS_PATH}"
+    else
+      exec bash "${ROOT_DIR}/ci/solidity_foundry.sh" "${ABS_PATH}"
+    fi
     ;;
   *)
     echo "Unsupported example type: ${EXAMPLE_TYPE}" >&2

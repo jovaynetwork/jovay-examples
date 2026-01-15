@@ -15,6 +15,8 @@ unset FOUNDRY_OFFLINE || true
 FOUNDRY_FMT="${FOUNDRY_FMT:-true}"
 FOUNDRY_BUILD="${FOUNDRY_BUILD:-true}"
 FOUNDRY_TEST="${FOUNDRY_TEST:-true}"
+# Use ENABLE_FOUNDRY_LINT to avoid conflict with Foundry's FOUNDRY_LINT config env var
+ENABLE_FOUNDRY_LINT="${ENABLE_FOUNDRY_LINT:-${FOUNDRY_LINT:-true}}"
 
 cd "${EXAMPLE_DIR}"
 
@@ -22,6 +24,7 @@ echo "==> Foundry checks in: ${EXAMPLE_DIR}"
 echo "FOUNDRY_FMT=${FOUNDRY_FMT}"
 echo "FOUNDRY_BUILD=${FOUNDRY_BUILD}"
 echo "FOUNDRY_TEST=${FOUNDRY_TEST}"
+echo "ENABLE_FOUNDRY_LINT=${ENABLE_FOUNDRY_LINT}"
 echo "FOUNDRY_TEST_OFFLINE=${FOUNDRY_TEST_OFFLINE}"
 echo
 
@@ -34,6 +37,12 @@ fi
 if [[ "${FOUNDRY_BUILD}" == "true" ]]; then
   echo "==> forge build"
   forge build
+  echo
+fi
+
+if [[ "${ENABLE_FOUNDRY_LINT}" == "true" ]]; then
+  echo "==> forge lint"
+  forge lint
   echo
 fi
 

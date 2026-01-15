@@ -116,6 +116,12 @@ def validate_registry(registry: Dict[str, Any], repo_root: Path) -> List[Dict[st
         foundry_fmt = _get_nested(ex, ("test", "solidity", "foundry", "fmt"))
         foundry_build = _get_nested(ex, ("test", "solidity", "foundry", "build"))
         foundry_test = _get_nested(ex, ("test", "solidity", "foundry", "test"))
+        foundry_lint = _get_nested(ex, ("test", "solidity", "foundry", "lint"))
+
+        # Check for Hardhat config
+        hardhat_compile = _get_nested(ex, ("test", "solidity", "hardhat", "compile"))
+        hardhat_test = _get_nested(ex, ("test", "solidity", "hardhat", "test"))
+        hardhat_lint = _get_nested(ex, ("test", "solidity", "hardhat", "lint"))
 
         validated.append(
             {
@@ -126,7 +132,13 @@ def validate_registry(registry: Dict[str, Any], repo_root: Path) -> List[Dict[st
                     "fmt": bool(foundry_fmt) if foundry_fmt is not None else True,
                     "build": bool(foundry_build) if foundry_build is not None else True,
                     "test": True if foundry_test is not None else True,
+                    "lint": bool(foundry_lint) if foundry_lint is not None else True,
                     "offline": foundry_offline,
+                },
+                "hardhat": {
+                    "compile": bool(hardhat_compile) if hardhat_compile is not None else False,
+                    "test": bool(hardhat_test) if hardhat_test is not None else False,
+                    "lint": bool(hardhat_lint) if hardhat_lint is not None else True,
                 },
             }
         )
