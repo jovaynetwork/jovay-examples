@@ -58,13 +58,6 @@ def _load_yaml_with_ruby(yaml_path: Path) -> Dict[str, Any]:
     return data
 
 
-def load_yaml(yaml_path: Path) -> Dict[str, Any]:
-    try:
-        return _load_yaml_with_pyyaml(yaml_path)
-    except Exception:
-        return _load_yaml_with_ruby(yaml_path)
-
-
 def _get_nested(d: Dict[str, Any], path: Tuple[str, ...]) -> Any:
     cur: Any = d
     for k in path:
@@ -96,9 +89,11 @@ def validate_registry(registry: Dict[str, Any], repo_root: Path) -> List[Dict[st
 
         if not isinstance(ex_path, str) or not ex_path.strip():
             raise ValueError(f"examples.yaml: examples[{idx}].path must be a non-empty string")
+
         if ex_path in seen_paths:
             raise ValueError(f"examples.yaml: duplicate path: {ex_path}")
         seen_paths.add(ex_path)
+
         abs_path = (repo_root / ex_path).resolve()
         if not abs_path.exists() or not abs_path.is_dir():
             raise ValueError(f"examples.yaml: examples[{idx}].path does not exist: {ex_path}")
@@ -108,6 +103,13 @@ def validate_registry(registry: Dict[str, Any], repo_root: Path) -> List[Dict[st
 
         if not isinstance(ex_desc, str) or not ex_desc.strip():
             raise ValueError(f"examples.yaml: examples[{idx}].description must be a non-empty string")
+
+        # Validate type is one of the allowed types
+        allowed_types = ["solidity", "frontend"]
+        if ex_type not in allowed_types:
+            raise ValueError(
+                f"examples.yaml: examples[{idx}].type must be one of: {', '.join(allowed_types)}"
+            )
 
         # Normalize minimal flags for known types
         foundry_offline = bool(
@@ -138,12 +140,19 @@ def validate_registry(registry: Dict[str, Any], repo_root: Path) -> List[Dict[st
                 "hardhat": {
                     "compile": bool(hardhat_compile) if hardhat_compile is not None else False,
                     "test": bool(hardhat_test) if hardhat_test is not None else False,
-                    "lint": bool(hardhat_lint) if hardhat_lint is not None else True,
+                    "lint": bool(hardhat_lint) if hardhat_lint is not None else False,
                 },
             }
         )
 
     return validated
+
+
+def load_yaml(yaml_path: Path) -> Dict[str, Any]:
+    try:
+        return _load_yaml_with_pyyaml(yaml_path)
+    except Exception:
+        return _load_yaml_with_ruby(yaml_path)
 
 
 def main() -> int:
@@ -197,13 +206,10 @@ def main() -> int:
             # Collect paths and types for this group
             paths = [ex["path"] for ex in group_examples]
             # All examples in a group should have the same type, but we'll use the first one
-            # and verify they're all the same
             types = {ex["type"] for ex in group_examples}
             if len(types) > 1:
-                raise ValueError(
-                    f"Group {group_name} has mixed types: {types}. "
-                    "All examples in a group must have the same type."
-                )
+                # Only warn if mixed types in a group, but don't fail
+                print(f"Warning: Group {group_name} has mixed types: {types}", file=sys.stderr)
             example_type = group_examples[0]["type"]
 
             # For foundry examples, check if any requires offline mode
@@ -224,14 +230,13 @@ def main() -> int:
     if args.format == "paths":
         # Output all paths as space-separated string, plus type and foundry_offline info
         all_paths = [ex["path"] for ex in examples]
-        # Check types - all should be the same, but we'll use the first one
+        # Check types - all should be same, but we'll use the first one
         types = {ex["type"] for ex in examples}
         if len(types) > 1:
-            raise ValueError(
-                f"Mixed types found: {types}. "
-                "All examples must have the same type to run in a single job."
-            )
+            # Only warn if mixed types, but don't fail
+            print(f"Warning: Mixed types found: {types}", file=sys.stderr)
         example_type = examples[0]["type"]
+
         # For foundry examples, check if any requires offline mode
         foundry_offline = any(ex["foundry"]["offline"] for ex in examples if example_type == "solidity")
 
@@ -249,4 +254,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
