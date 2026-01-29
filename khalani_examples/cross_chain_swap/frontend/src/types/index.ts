@@ -14,7 +14,8 @@ export interface Network {
 
 // Token types
 export interface Token {
-  symbol: string;
+  key: string; // Internal key for token correspondence (e.g., "ETH", "USDC") - constant across networks
+  symbol: string; // Display symbol (e.g., "USDC" on Ethereum, "USDC.e" on Jovay)
   name: string;
   address: string;
   decimals: number;
@@ -91,6 +92,8 @@ export interface Order {
   toToken: string;
   srcAmount: string;
   destAmount: string;
+  fromDecimals: number;
+  toDecimals: number;
   depositTxHash: string | null;
   createdAt: string;
   updatedAt: string;

@@ -228,6 +228,8 @@ export const SwapForm = ({
             toToken: state.toToken.address,
             srcAmount: state.quote?.routes[0]?.quote.amountIn || '0',
             destAmount: state.quote?.routes[0]?.quote.amountOut || '0',
+            fromDecimals: state.fromToken.decimals,
+            toDecimals: state.toToken.decimals,
             depositTxHash: null,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),

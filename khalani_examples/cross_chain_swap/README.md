@@ -41,7 +41,9 @@ Before you begin, ensure you have:
 | Token | Ethereum | Jovay |
 |-------|----------|--------|
 | ETH | Native (0xEeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE) | Native |
-| USDC | 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 | 0x... (Confirm with Jovay docs) |
+| USDC/USDC.e | 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 | 0x0cb184F30CCAA14A8eF71ea8D9528812E64FcE9f (USDC.e) |
+
+Notice: the USDC.e is deployed and managed by Khalani.
 
 > **Note**: The USDC address on Jovay needs to be confirmed and updated in `src/config.ts`.
 

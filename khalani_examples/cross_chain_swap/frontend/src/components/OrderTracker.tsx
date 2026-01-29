@@ -1,4 +1,5 @@
 import { Order, OrderStatus } from '../types';
+import { formatTokenAmount } from '../config';
 
 interface OrderTrackerProps {
   order: Order | null;
@@ -128,12 +129,16 @@ export const OrderTracker = ({ order, isTracking, onClose }: OrderTrackerProps) 
 
         <div className="flex items-center justify-between py-3 border-b border-gray-200">
           <span className="text-sm font-medium text-gray-700">Source Amount</span>
-          <span className="text-sm font-mono text-gray-900">{order.srcAmount}</span>
+          <span className="text-sm font-mono text-gray-900">
+            {formatTokenAmount(order.srcAmount, order.fromDecimals)}
+          </span>
         </div>
 
         <div className="flex items-center justify-between py-3 border-b border-gray-200">
           <span className="text-sm font-medium text-gray-700">Destination Amount</span>
-          <span className="text-sm font-mono text-gray-900">{order.destAmount}</span>
+          <span className="text-sm font-mono text-gray-900">
+            {formatTokenAmount(order.destAmount, order.toDecimals)}
+          </span>
         </div>
 
         {order.depositTxHash && (

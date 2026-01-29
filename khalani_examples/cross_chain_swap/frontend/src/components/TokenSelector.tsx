@@ -1,4 +1,5 @@
 import { Token } from '../types';
+import { formatAddress } from '../config';
 
 interface TokenSelectorProps {
   tokens: Token[];
@@ -9,6 +10,7 @@ interface TokenSelectorProps {
   balance?: string | null;
   decimals?: number;
   isLoading?: boolean;
+  explorerUrl?: string;
 }
 
 export const TokenSelector = ({
@@ -20,6 +22,7 @@ export const TokenSelector = ({
   balance,
   decimals,
   isLoading,
+  explorerUrl,
 }: TokenSelectorProps) => {
   const formatBalance = (balanceStr: string | null, tokenDecimals: number) => {
     if (!balanceStr || balanceStr === 'Loading...') return balanceStr;
@@ -56,7 +59,7 @@ export const TokenSelector = ({
           className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed appearance-none cursor-pointer"
         >
           {tokens.map((token) => (
-            <option key={token.symbol} value={token.symbol}>
+            <option key={token.key} value={token.symbol}>
               {token.symbol} - {token.name}
             </option>
           ))}
@@ -95,6 +98,19 @@ export const TokenSelector = ({
       <p className="text-xs text-gray-500">
         {selectedToken.isNative ? 'Native token' : 'ERC-20'}
       </p>
+      {!selectedToken.isNative && explorerUrl && (
+        <p className="text-xs text-gray-500">
+          Contract:{' '}
+          <a
+            href={`${explorerUrl}/address/${selectedToken.address}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:text-blue-800 underline"
+          >
+            {formatAddress(selectedToken.address)}
+          </a>
+        </p>
+      )}
     </div>
   );
 };

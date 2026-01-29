@@ -29,17 +29,39 @@ const initialState: SwapState = {
 function swapReducer(state: SwapState, action: SwapAction): SwapState {
   switch (action.type) {
     case 'SET_FROM_NETWORK':
-      return { ...state, fromNetwork: action.network, fromToken: getToken(state.fromToken.symbol, action.network), quote: null, route: null };
+      return { ...state, fromNetwork: action.network, fromToken: getToken(state.fromToken.key, action.network), quote: null, route: null };
     case 'SET_TO_NETWORK':
-      return { ...state, toNetwork: action.network, toToken: getToken(state.toToken.symbol, action.network), quote: null, route: null };
+      return { ...state, toNetwork: action.network, toToken: getToken(state.toToken.key, action.network), quote: null, route: null };
     case 'SET_FROM_TOKEN':
-      return { ...state, fromToken: action.token, quote: null, route: null };
+      // Update fromToken and auto-update toToken to match key (ETH ↔ ETH, USDC ↔ USDC)
+      return {
+        ...state,
+        fromToken: action.token,
+        toToken: getToken(action.token.key, state.toNetwork),
+        quote: null,
+        route: null
+      };
     case 'SET_TO_TOKEN':
-      return { ...state, toToken: action.token, quote: null, route: null };
+      // Update toToken and auto-update fromToken to match key (ETH ↔ ETH, USDC ↔ USDC)
+      return {
+        ...state,
+        fromToken: getToken(action.token.key, state.fromNetwork),
+        toToken: action.token,
+        quote: null,
+        route: null
+      };
     case 'SET_AMOUNT':
       return { ...state, amount: action.amount, quote: null, route: null };
     case 'SWITCH_NETWORKS':
-      return { ...initialState, fromNetwork: state.toNetwork, toNetwork: state.fromNetwork, fromToken: state.toToken, toToken: state.fromToken };
+      // Swap from/to networks while preserving token correspondence
+      // This ensures ETH ↔ ETH and USDC ↔ USDC when swapping networks
+      return {
+        ...initialState,
+        fromNetwork: state.toNetwork,
+        toNetwork: state.fromNetwork,
+        fromToken: getToken(state.fromToken.key, state.toNetwork),
+        toToken: getToken(state.toToken.key, state.fromNetwork),
+      };
     case 'FETCHING_QUOTE':
       return { ...state, isFetchingQuote: action.isFetching, error: null };
     case 'QUOTE_RECEIVED':
@@ -119,7 +141,11 @@ function AppContent() {
         return data.result || '0x0';
       } else {
         // ERC-20 token balance (USDC) - use RPC call
-        const balanceOfData = `0x70a0823100000000000000000000000000000000000000000000000000000000000000000${address.slice(2).padStart(64, '0')}`;
+        // balanceOf selector (4 bytes) + owner address (32 bytes, padded)
+        const addressLower = address.toLowerCase().startsWith('0x')
+          ? address.toLowerCase().slice(2)
+          : address.toLowerCase();
+        const balanceOfData = `0x70a08231${addressLower.padStart(64, '0')}`;
         const response = await fetch(rpcUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

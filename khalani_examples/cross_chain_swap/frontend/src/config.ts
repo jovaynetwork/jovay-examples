@@ -24,15 +24,14 @@ export const NETWORKS: Record<string, Network> = {
       symbol: 'ETH',
       decimals: 18,
     },
-    // Note: USDC address on Jovay needs to be confirmed
-    // Using a placeholder - update with actual address
-    usdcAddress: '0x...', // TODO: Confirm Jovay USDC address
+    usdcAddress: '0x0cb184F30CCAA14A8eF71ea8D9528812E64FcE9f', // USDC.e on Jovay
   },
 };
 
 // Token configurations
 export const TOKENS: Record<string, (network: Network) => Token> = {
   ETH: (network: Network): Token => ({
+    key: 'ETH',
     symbol: 'ETH',
     name: network.name,
     address: '0x0000000000000000000000000000000000000000',
@@ -40,8 +39,9 @@ export const TOKENS: Record<string, (network: Network) => Token> = {
     isNative: true,
   }),
   USDC: (network: Network): Token => ({
-    symbol: 'USDC',
-    name: 'USD Coin',
+    key: 'USDC',
+    symbol: network.name === 'Jovay' ? 'USDC.e' : 'USDC',
+    name: network.name === 'Jovay' ? 'Bridged USDC' : 'USD Coin',
     address: network.usdcAddress,
     decimals: 6,
     isNative: false,
@@ -51,11 +51,11 @@ export const TOKENS: Record<string, (network: Network) => Token> = {
 // Khalani API configuration
 export const KHALANI_API_BASE_URL = 'https://api.hyperstream.dev';
 
-// Helper function to get token by symbol for a network
-export const getToken = (symbol: string, network: Network): Token => {
-  const tokenFactory = TOKENS[symbol.toUpperCase()];
+// Helper function to get token by key for a network
+export const getToken = (key: string, network: Network): Token => {
+  const tokenFactory = TOKENS[key.toUpperCase()];
   if (!tokenFactory) {
-    throw new Error(`Unknown token: ${symbol}`);
+    throw new Error(`Unknown token key: ${key}`);
   }
   return tokenFactory(network);
 };
