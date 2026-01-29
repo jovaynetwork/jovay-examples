@@ -35,8 +35,18 @@ The jovay-examples repository hosts small, focused, runnable examples that help 
 │   └── ccip_example/            # Example: CCIP messaging + token transfer
 ├── ci/                          # CI/CD scripts
 │   ├── list_examples.py         # Parses examples.yaml, generates CI matrix
-│   ├── run_example.sh          # Main CI runner (dispatches by type)
-│   └── solidity_foundry.sh     # Foundry-specific checks
+│   ├── run_example.sh           # Main CI runner (dispatches by type)
+│   └── solidity_foundry.sh      # Foundry-specific checks
+├── foundry_examples/            # Foundry tutorial examples
+│   ├── token_example/           # ERC-20 token example
+│   ├── nft_example/             # ERC-721 NFT example
+│   └── staking_example/         # Staking contract example
+├── hardhat_examples/            # Hardhat tutorial examples
+│   ├── token_example/           # ERC-20 token example
+│   ├── nft_example/             # ERC-721 NFT example
+│   └── staking_example/         # Staking contract example
+├── khalani_examples/            # Khalani intent market examples
+│   └── cross_chain_swap/        # Cross-chain swap dApp (Vite + React)
 ├── .github/workflows/           # GitHub Actions workflows
 │   └── examples.yml             # CI workflow definition
 ├── examples.yaml                # Single source of truth for examples registry
@@ -79,6 +89,10 @@ examples:
           build: true        # Run forge build
           test:              # Run forge test
             offline: true    # Use --offline flag for tests
+
+  - path: khalani_examples/cross_chain_swap
+    type: frontend
+    description: "Khalani cross-chain swap example dApp (Vite + React): swap ETH/USDC between Ethereum Mainnet and Jovay Network using Intent Markets."
 ```
 
 ### Validation Rules
@@ -98,9 +112,9 @@ When adding a new example:
 1. Create the example directory and files
 2. Add an entry to `examples.yaml` with:
    - Unique `path` (relative to repo root)
-   - `type` (currently `solidity` is supported)
+   - `type` (`solidity` or `frontend`)
    - Clear `description`
-   - Appropriate `test` configuration
+   - Appropriate `test` configuration (for `solidity` type)
 
 ### CI Integration
 
@@ -110,6 +124,7 @@ The GitHub Actions workflow (`.github/workflows/examples.yml`):
 2. Generates a matrix of examples
 3. Runs checks for each example in parallel
 4. For `solidity` type, executes `ci/solidity_foundry.sh`
+5. For `frontend` type, performs basic file structure validation
 
 ## Adding New Examples
 
@@ -187,6 +202,25 @@ The GitHub Actions workflow (`.github/workflows/examples.yml`):
 └── README.md              # Example documentation
 ```
 
+### Example Structure (Frontend)
+
+```
+<example_name>/
+├── frontend/               # Frontend application (Vite + React)
+│   ├── src/
+│   │   ├── components/     # React components
+│   │   ├── hooks/          # Custom React hooks
+│   │   ├── lib/            # Utility libraries
+│   │   ├── types/          # TypeScript definitions
+│   │   ├── config.ts       # Configuration
+│   │   ├── App.tsx         # Main app component
+│   │   └── main.tsx        # Entry point
+│   ├── package.json        # Dependencies
+│   ├── vite.config.ts      # Vite configuration
+│   └── README.md           # Frontend documentation
+└── README.md               # Example documentation (at root)
+```
+
 ## Modifying Existing Examples
 
 ### Best Practices
@@ -255,6 +289,14 @@ For `solidity` type examples, `ci/solidity_foundry.sh` runs:
 3. **Test**: `forge test --force [--offline]`
 
 All checks must pass for CI to succeed.
+
+### Frontend Checks
+
+For `frontend` type examples, basic file structure validation is performed:
+
+1. Verify required directories exist (`frontend/src/`, `frontend/components/`)
+2. Check for essential files (`package.json`, `vite.config.ts`)
+3. Validate `package.json` has required scripts
 
 ### Environment Variables
 

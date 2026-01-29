@@ -134,6 +134,7 @@ export const SwapForm = ({
               balance={state.fromTokenBalance}
               decimals={state.fromToken.decimals}
               isLoading={state.isFetchingBalance}
+              explorerUrl={state.fromNetwork.explorer}
             />
 
             <TokenSelector
@@ -145,6 +146,7 @@ export const SwapForm = ({
               balance={state.toTokenBalance}
               decimals={state.toToken.decimals}
               isLoading={state.isFetchingBalance}
+              explorerUrl={state.toNetwork.explorer}
             />
           </div>
 

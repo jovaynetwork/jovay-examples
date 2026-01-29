@@ -14,12 +14,14 @@ This repository hosts small, focused examples that you can copy, modify, and run
 │   └── ccip_example/            # CCIP (Foundry): messaging + token transfer
 ├── foundry_examples/            # Foundry tutorial examples
 │   ├── token_example/           # ERC-20 token (Foundry)
-│   ├── nft_example/              # ERC-721 NFT (Foundry)
+│   ├── nft_example/             # ERC-721 NFT (Foundry)
 │   └── staking_example/         # Staking contract (Foundry)
 ├── hardhat_examples/            # Hardhat tutorial examples
 │   ├── token_example/           # ERC-20 token (Hardhat)
 │   ├── nft_example/             # ERC-721 NFT (Hardhat)
 │   └── staking_example/         # Staking contract (Hardhat)
+├── khalani_examples/            # Khalani intent market examples
+│   └── cross_chain_swap/        # Cross-chain swap dApp (Vite + React)
 └── LICENSE
 ```
 
@@ -74,6 +76,13 @@ git submodule update --init --recursive
   - Build and deploy a simple staking contract on Jovay using Hardhat
   - See: `hardhat_examples/staking_example/README.md`
 
+### Khalani Intent Markets
+
+- **Cross-Chain Swap dApp**: `khalani_examples/cross_chain_swap`
+  - Swap ETH/USDC between **Ethereum Mainnet** and **Jovay Network** using Intent Markets
+  - Built with Vite + React + TailwindCSS
+  - See: `khalani_examples/cross_chain_swap/README.md`
+
 ## Documentation
 
 - Jovay docs: `https://docs.jovay.io`
@@ -98,3 +107,4 @@ This repo uses `examples.yaml` as the single source of truth for examples metada
 - CI runs basic checks per example type:
   - **solidity (Foundry)**: `forge fmt --check`, `forge build`, `forge test` (optionally `--offline`).
   - **solidity (Hardhat)**: `npx hardhat compile`, `npx hardhat test`.
+  - **frontend**: Basic file validation (structure check).
