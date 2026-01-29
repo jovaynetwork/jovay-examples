@@ -264,6 +264,9 @@ export const SwapForm = ({
             <div className="space-y-1">
               <p className="text-xs text-gray-500">
                 <span className="font-medium">{state.fromToken.symbol}</span>: {state.fromToken.name}
+                {state.fromToken.symbol === 'USDC' && state.fromNetwork.chainId === 5734951 && (
+                  <span className="text-gray-400"> (bridged USDC)</span>
+                )}
               </p>
               <p className="text-xs text-gray-500">
                 Address:{' '}
@@ -287,6 +290,9 @@ export const SwapForm = ({
             <div className="space-y-1">
               <p className="text-xs text-gray-500">
                 <span className="font-medium">{state.toToken.symbol}</span>: {state.toToken.name}
+                {state.toToken.symbol === 'USDC' && state.toNetwork.chainId === 5734951 && (
+                  <span className="text-gray-400"> (bridged USDC)</span>
+                )}
               </p>
               <p className="text-xs text-gray-500">
                 Address:{' '}
