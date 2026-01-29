@@ -71,3 +71,7 @@ examples:
         hardhat:
           compile: true
           test: true
+
+  - path: khalani_examples/cross_chain_swap
+    type: frontend
+    description: "Khalani cross-chain swap example dApp (Vite + React): swap ETH/USDC between Ethereum Mainnet and Jovay Network using Intent Markets."
