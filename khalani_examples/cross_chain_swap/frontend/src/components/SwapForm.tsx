@@ -255,6 +255,58 @@ export const SwapForm = ({
           <li>Automatic optimization as solvers improve</li>
         </ul>
       </div>
+
+      <div className="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+        <h3 className="text-sm font-semibold text-gray-700 mb-3">Token Information</h3>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <p className="text-xs font-medium text-gray-600 mb-1">From: {state.fromNetwork.name}</p>
+            <div className="space-y-1">
+              <p className="text-xs text-gray-500">
+                <span className="font-medium">{state.fromToken.symbol}</span>: {state.fromToken.name}
+              </p>
+              <p className="text-xs text-gray-500">
+                Address:{' '}
+                {state.fromToken.isNative ? (
+                  <span className="text-gray-400">Native Token</span>
+                ) : (
+                  <a
+                    href={`${state.fromNetwork.explorer}/address/${state.fromToken.address}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 underline"
+                  >
+                    {state.fromToken.address.slice(0, 6)}...{state.fromToken.address.slice(-4)}
+                  </a>
+                )}
+              </p>
+            </div>
+          </div>
+          <div>
+            <p className="text-xs font-medium text-gray-600 mb-1">To: {state.toNetwork.name}</p>
+            <div className="space-y-1">
+              <p className="text-xs text-gray-500">
+                <span className="font-medium">{state.toToken.symbol}</span>: {state.toToken.name}
+              </p>
+              <p className="text-xs text-gray-500">
+                Address:{' '}
+                {state.toToken.isNative ? (
+                  <span className="text-gray-400">Native Token</span>
+                ) : (
+                  <a
+                    href={`${state.toNetwork.explorer}/address/${state.toToken.address}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 underline"
+                  >
+                    {state.toToken.address.slice(0, 6)}...{state.toToken.address.slice(-4)}
+                  </a>
+                )}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
